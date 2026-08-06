@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import userRoute from './routes/user.route.js';
 
 const app = express();
 
@@ -11,7 +12,9 @@ app.use(
     credentials: true,
   }),
 );
+app.use(express.urlencoded({ extended: true }));
 
 // api endpoint's
+app.use('/api/v1/users', userRoute);
 
 export default app;
