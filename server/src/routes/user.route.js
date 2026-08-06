@@ -1,9 +1,10 @@
 import express from 'express';
-import { getStats } from '../controllers/user.controller.js';
+import { getStats, searchUser } from '../controllers/user.controller.js';
 
 const userRoute = express.Router();
 
 // routes
 userRoute.get('/stats', getStats);
+userRoute.get('/search/:query', searchUser);
 
 export default userRoute;
