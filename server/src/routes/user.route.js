@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  getAllUsers,
   getStats,
   getUserById,
   searchUser,
@@ -11,5 +12,6 @@ const userRoute = express.Router();
 userRoute.get('/stats', getStats);
 userRoute.get('/search/:query', searchUser);
 userRoute.get('/:id', getUserById);
+userRoute.get('/', getAllUsers);
 
 export default userRoute;
