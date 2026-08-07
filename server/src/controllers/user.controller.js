@@ -64,3 +64,29 @@ export const searchUser = async (req, res) => {
     });
   }
 };
+
+// get single user
+export const getUserById = async (req, res) => {
+  try {
+    // find user & get the id from req.params
+    const user = await User.findById(req.params.id);
+
+    // validation
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: false, message: 'User not found!' });
+    }
+
+    // success response
+    res
+      .status(200)
+      .json({ success: true, message: 'User fetch successfully!', data: user });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error!',
+      error: error.message,
+    });
+  }
+};
