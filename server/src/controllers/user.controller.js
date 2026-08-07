@@ -22,7 +22,7 @@ export const getStats = async (req, res) => {
 // search users
 export const searchUser = async (req, res) => {
   try {
-    // get query by req params
+    // get query from req.params
     const query = req.params.query;
 
     // pagination
@@ -30,7 +30,7 @@ export const searchUser = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // search query
+    // create search query
     const searchQuery = {
       $or: [
         { name: { $regex: query, $options: 'i' } },
@@ -40,18 +40,19 @@ export const searchUser = async (req, res) => {
       ],
     };
 
-    const users = await User.find(searchQuery)
+    // find user
+    const users = await User.find(searchQuery);
+
+    // total count
+    const total = await User.countDocuments(searchQuery)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    // total
-    const total = await User.countDocuments(searchQuery);
-
     // success response
-    res.json({
+    res.status(200).json({
       users,
-      currenPage: page,
+      currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalUsers: total,
     });
