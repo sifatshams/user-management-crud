@@ -65,6 +65,42 @@ export const searchUser = async (req, res) => {
   }
 };
 
+// get all users
+export const getAllUsers = async (req, res) => {
+  try {
+    // pagination for users
+    const query = req.params.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // find users
+    const users = await User.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // total counts
+    const total = await User.countDocuments();
+
+    // success response
+    res.status(200).json({
+      success: true,
+      message: 'All users fetch successfully!',
+      users,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalUsers: total,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error!',
+      error: error.message,
+    });
+  }
+};
+
 // get single user
 export const getUserById = async (req, res) => {
   try {
