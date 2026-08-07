@@ -126,3 +126,52 @@ export const getUserById = async (req, res) => {
     });
   }
 };
+
+// create user
+export const createUser = async (req, res) => {
+  try {
+    // destructure form req.body
+    const { name, email, phone, status } = req.body;
+
+    // validation
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, email and phone are required!',
+      });
+    }
+
+    // if user exists?
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: false, message: 'This email are already exists!' });
+    }
+
+    // create user
+    const user = new User({
+      name,
+      email,
+      phone,
+      status: status || 'Active',
+    });
+
+    await user.save();
+
+    // success response
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: 'User created successfully!',
+        data: user,
+      });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error!',
+      error: error.message,
+    });
+  }
+};
