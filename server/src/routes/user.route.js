@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createUser,
+  deleteUser,
   getAllUsers,
   getStats,
   getUserById,
@@ -17,5 +18,6 @@ userRoute.get('/', getAllUsers);
 userRoute.get('/:id', getUserById);
 userRoute.post('/', createUser);
 userRoute.put('/:id', updateUser);
+userRoute.delete('/:id', deleteUser);
 
 export default userRoute;
