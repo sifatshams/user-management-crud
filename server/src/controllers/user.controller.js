@@ -160,18 +160,69 @@ export const createUser = async (req, res) => {
     await user.save();
 
     // success response
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: 'User created successfully!',
-        data: user,
-      });
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully!',
+      data: user,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Internal server error!',
       error: error.message,
+    });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    // destructure the property
+    const { id } = req.params;
+    const { name, email, phone, status } = req.body;
+
+    // if user exists?
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: id } });
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: 'Email already exists!',
+        });
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name,
+          email,
+          phone,
+          status,
+        },
+      },
+      { new: true, runValidators: true },
+    );
+
+    // validation
+    if (!updatedUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found!' });
+    }
+
+    // success response
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully!',
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error('Update User Error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update user',
     });
   }
 };
