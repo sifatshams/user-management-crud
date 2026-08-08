@@ -174,6 +174,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+// update user
 export const updateUser = async (req, res) => {
   try {
     // destructure the property
@@ -219,6 +220,34 @@ export const updateUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Update User Error:', error);
+
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update user',
+    });
+  }
+};
+
+// delete user
+export const deleteUser = async (req, res) => {
+  try {
+    // destructure the id
+    const { id } = req.params;
+
+    // validation
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found!' });
+    }
+
+    // success response
+    res
+      .status(200)
+      .json({ success: true, message: 'User deleted successfully!' });
+  } catch (error) {
+    console.error('Delete User Error:', error);
 
     return res.status(500).json({
       success: false,
